@@ -24,12 +24,12 @@ jobs:
 
       - name: Log in to ACR
         run: |
-          az acr login -n ${{ secrets.ACR_NAME}}
+          az acr login -n ahugheswebappcontainerdev
       
       - name: Build and push container image to registry
         run: |
-          docker build . -t https://${{ secrets.ACR_NAME }}.azurecr.io/${{ secrets.WEB_APP_NAME }}:${{ github.sha }}
-          docker push https://${{ secrets.ACR_NAME }}.azurecr.io/${{ secrets.WEB_APP_NAME }}:${{ github.sha }}
+          docker build . -t https://ahugheswebappcontainerdev.azurecr.io/ahugheswebappcontainer/helloworld:${{ github.sha }}
+          docker push https://ahugheswebappcontainerdev.azurecr.io/ahugheswebappcontainer/helloworld:${{ github.sha }}
   
   deploy:
     runs-on: ubuntu-latest
@@ -46,9 +46,9 @@ jobs:
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
-        app-name: ${{ secrets.WEB_APP_NAME }}
+        app-name: ahugheswebappcontainer
         slot-name: 'staging'
-        images: ${{ secrets.ACR_NAME }}.azurecr.io/${{ secrets.WEB_APP_NAME }}/helloworld:${{ github.sha}}
+        images: ahugheswebappcontainerdev.azurecr.io/ahugheswebappcontainer/helloworld:${{ github.sha}}
         
   release:
     runs-on: ubuntu-latest
@@ -66,4 +66,4 @@ jobs:
       with:
         azcliversion: 2.30.0
         inlineScript: |
-          az webapp deployment slot swap --slot 'staging' --name ${{ secrets.WEB_APP_NAME }} --resource-group ${{ secrets.WEB_APP_NAME }}
+          az webapp deployment slot swap --slot 'staging' --name ahugheswebappcontainer --resource-group ahughes-webappcontainer-wus3-rg
