@@ -28,7 +28,8 @@ jobs:
       
       - name: Build and push container image to registry
         run: |
-          docker build . -t https://ahugheswebappcontainerdev.azurecr.io/ahugheswebappcontainer/helloworld:${{ github.sha }}
+          docker pull nginxdemos/hello
+          docker tag nginxdemos/hello https://ahugheswebappcontainerdev.azurecr.io/ahugheswebappcontainer/helloworld:${{ github.sha }}
           docker push https://ahugheswebappcontainerdev.azurecr.io/ahugheswebappcontainer/helloworld:${{ github.sha }}
   
   deploy:
