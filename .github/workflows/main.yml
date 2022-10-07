@@ -23,10 +23,8 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUB_ID }}
 
       - name: Log in to ACR
-        uses: azure/CLI@v1
-        with:
-          inlineScript: |
-            az acr login -n ${{ secrets.ACR_NAME}}
+        run: |
+          az acr login -n ${{ secrets.ACR_NAME}}
       
       - name: Build and push container image to registry
         run: |
