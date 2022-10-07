@@ -14,6 +14,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      
+      - name: AZ CLI Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUB_ID }}
 
       - name: Set up Docker BuildX
         uses: docker/setup-buildx-action@v1
@@ -22,15 +29,12 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ${{ secrets.ACR_NAME }}.azurecr.io
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
           
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
         with:
           push: true
           tags: ${{ secrets.ACR_NAME }}.azurecr.io/${{ secrets.ACR_USERNAME }}/helloworld:${{ github.sha}}
-#           file: 
 
   deploy:
     runs-on: ubuntu-latest
@@ -49,7 +53,7 @@ jobs:
       with:
         app-name: ${{ secrets.WEB_APP_NAME }}
         slot-name: 'staging'
-        images: ${{ secrets.ACR_NAME }}.azurecr.io/${{ secrets.ACR_USERNAME }}/helloworld:${{ github.sha}}
+        images: ${{ secrets.ACR_NAME }}.azurecr.io/${{ secrets.WEB_APP_NAME }}/helloworld:${{ github.sha}}
         
   release:
     runs-on: ubuntu-latest
